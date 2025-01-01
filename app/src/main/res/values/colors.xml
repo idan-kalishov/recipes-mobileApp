@@ -1,0 +1,23 @@
+<resources>
+    <!-- Updated Colors -->
+    <color name="colorPrimary">#4A90E2</color> <!-- Blue accent -->
+    <color name="colorPrimaryDark">#357ABD</color>
+    <color name="colorAccent">#FFC107</color> <!-- Yellow for emphasis -->
+    <color name="white">#FFFFFF</color>
+
+
+
+    <!-- Background and text colors -->
+    <color name="colorBackground">#F7F9FC</color> <!-- Light bluish background -->
+    <color name="colorTextPrimary">#333333</color> <!-- Dark gray for text -->
+    <color name="colorTextSecondary">#555555</color> <!-- Medium gray for secondary text -->
+
+    <!-- Input field and button colors -->
+    <color name="colorInputBackground">#FFFFFF</color> <!-- White for input fields -->
+    <color name="colorInputBorder">#B0C4DE</color> <!-- Light blue-gray border -->
+    <color name="colorButtonText">#FFFFFF</color> <!-- White text for buttons -->
+    <color name="colorButtonBackground">#4A90E2</color> <!-- Match primary color -->
+    <color name="colorHint">#808080</color>
+
+
+</resources>
