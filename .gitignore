@@ -153,7 +153,7 @@ obj/
 
 # Legacy Eclipse project files
 .classpath
-.project
+.project-++
 .cproject
 .settings/
 

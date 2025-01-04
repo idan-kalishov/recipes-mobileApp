@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#357ABD</color>
     <color name="colorAccent">#FFC107</color> <!-- Yellow for emphasis -->
     <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
 
 
 

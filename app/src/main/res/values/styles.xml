@@ -22,11 +22,12 @@
     <!-- EditText Style -->
     <style name="EditTextStyle" parent="Widget.MaterialComponents.TextInputEditText.OutlinedBox">
         <item name="android:background">@color/colorInputBackground</item>
-        <item name="android:padding">12dp</item>
-        <item name="cornerRadius">6dp</item>
-        <item name="android:textColor">@color/colorTextPrimary</item>
+        <item name="android:textColorHint">@color/colorHint</item> <!-- Hint color -->
+        <item name="android:textColor">@color/colorTextPrimary</item> <!-- Text color -->
         <item name="android:textSize">16sp</item>
+        <item name="cornerRadius">6dp</item>
     </style>
+
 
     <!-- TextView Style -->
     <style name="TextViewStyle" parent="TextAppearance.MaterialComponents.Body1">

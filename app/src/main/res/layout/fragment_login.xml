@@ -28,6 +28,7 @@
             app:boxCornerRadiusTopEnd="12dp"
             app:boxCornerRadiusBottomStart="12dp"
             app:boxCornerRadiusBottomEnd="12dp"
+            android:textColorHint="@color/black"
             android:hint="Email">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -53,6 +54,7 @@
             app:boxCornerRadiusTopEnd="12dp"
             app:boxCornerRadiusBottomStart="12dp"
             app:boxCornerRadiusBottomEnd="12dp"
+            android:textColorHint="@color/black"
             android:hint="Password">
 
             <com.google.android.material.textfield.TextInputEditText

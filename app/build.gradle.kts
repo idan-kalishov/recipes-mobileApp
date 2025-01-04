@@ -17,6 +17,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+
     }
 
     buildTypes {
@@ -37,7 +39,10 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
+        dataBinding = true
     }
+
 }
 
 dependencies {
@@ -63,6 +68,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-text:1.7.6")
     implementation("androidx.core:core-ktx:1.15.0")
 
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.1")
+    implementation ("androidx.navigation:navigation-ui-ktx:2.7.1")
+
 
     // Testing Dependencies
     testImplementation(libs.junit)
@@ -72,4 +80,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+
 }
