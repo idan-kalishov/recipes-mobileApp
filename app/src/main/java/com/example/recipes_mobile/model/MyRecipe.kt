@@ -9,5 +9,5 @@ data class MyRecipe(
     val title: String,
     val ingredients: String,
     val steps: String,
-    val imageBase64: String
+    val imageUrl: String
 )

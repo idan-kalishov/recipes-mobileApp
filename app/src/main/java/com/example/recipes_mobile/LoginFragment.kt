@@ -45,7 +45,7 @@ class LoginFragment : Fragment() {
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            findNavController().navigate(R.id.addRecipeFragment)
+                            findNavController().navigate(R.id.action_login_to_recipeFeed)
                         } else {
                             Log.e("LoginFragment", "Login failed", task.exception)
                             Toast.makeText(requireContext(), "Login failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
@@ -56,7 +56,7 @@ class LoginFragment : Fragment() {
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             Log.d("LoginFragment", "Signup successful")
-                            findNavController().navigate(R.id.action_login_to_addRecipe)
+                            findNavController().navigate(R.id.action_login_to_recipeFeed)
                         } else {
                             Log.e("LoginFragment", "Signup failed", task.exception)
                             Toast.makeText(requireContext(), "Signup failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()

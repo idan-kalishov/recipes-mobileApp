@@ -86,6 +86,8 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.7.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0")
     implementation("com.squareup.picasso:picasso:2.8")
+    implementation("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation("org.json:json:20210307")
 
     // Testing Dependencies
     testImplementation(libs.junit)

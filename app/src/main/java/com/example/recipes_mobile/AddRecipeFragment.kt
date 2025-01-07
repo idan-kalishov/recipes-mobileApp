@@ -11,8 +11,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.recipes_mobile.databinding.FragmentAddRecipeBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
@@ -32,6 +34,11 @@ class AddRecipeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentAddRecipeBinding.inflate(inflater, container, false)
+        (requireActivity() as AppCompatActivity).supportActionBar?.show()
+
+        binding.fabHome.setOnClickListener {
+            findNavController().navigate(R.id.recipeFeedFragment)
+        }
 
         // Button to select image
         binding.btnRecipe.setOnClickListener {
@@ -94,18 +101,26 @@ class AddRecipeFragment : Fragment() {
             return
         }
 
-        // Convert the image to Base64
-        val imageBase64 = encodeImageToBase64(selectedImageBitmap!!)
+        // Upload image to Imgur
+        ImgurUploader.uploadImage(selectedImageBitmap!!,
+            onSuccess = { imageUrl ->
+                // Save recipe with image URL to Firestore
+                saveRecipeToFirestore(title, ingredients, steps, imageUrl)
+            },
+            onFailure = { error ->
+                Toast.makeText(requireContext(), "Image upload failed: $error", Toast.LENGTH_SHORT).show()
+            }
+        )
+    }
 
-        // Create a recipe object
+    private fun saveRecipeToFirestore(title: String, ingredients: String, steps: String, imageUrl: String) {
         val recipe = hashMapOf(
             "title" to title,
             "ingredients" to ingredients,
             "steps" to steps,
-            "imageBase64" to imageBase64
+            "imageUrl" to imageUrl
         )
 
-        // Save the recipe to Firestore
         firestore.collection("recipes")
             .add(recipe)
             .addOnSuccessListener {
@@ -115,13 +130,6 @@ class AddRecipeFragment : Fragment() {
             .addOnFailureListener {
                 Toast.makeText(requireContext(), "Failed to save recipe: ${it.message}", Toast.LENGTH_SHORT).show()
             }
-    }
-
-    private fun encodeImageToBase64(bitmap: Bitmap): String {
-        val outputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-        val byteArray = outputStream.toByteArray()
-        return android.util.Base64.encodeToString(byteArray, android.util.Base64.DEFAULT)
     }
 
     private fun clearFields() {

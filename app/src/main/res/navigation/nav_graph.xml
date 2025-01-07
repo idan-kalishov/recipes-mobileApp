@@ -1,25 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
-    app:startDestination="@id/loginFragment">
+    <navigation xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/nav_graph"
+        app:startDestination="@id/loginFragment">
 
-    <!-- Login Fragment -->
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.example.recipes_mobile.LoginFragment"
-        tools:layout="@layout/fragment_login">
+        <!-- Login Fragment -->
+        <fragment
+            android:id="@+id/loginFragment"
+            android:name="com.example.recipes_mobile.LoginFragment"
+            tools:layout="@layout/fragment_login">
 
-        <!-- Action to navigate to Add Recipe Fragment -->
-        <action
-            android:id="@+id/action_login_to_addRecipe"
-            app:destination="@id/addRecipeFragment" />
-    </fragment>
+            <!-- Action to navigate to Recipe Feed Fragment -->
+            <action
+                android:id="@+id/action_login_to_recipeFeed"
+                app:destination="@id/recipeFeedFragment" />
+        </fragment>
 
-    <!-- Add Recipe Fragment -->
-    <fragment
-        android:id="@+id/addRecipeFragment"
-        android:name="com.example.recipes_mobile.AddRecipeFragment"
-        tools:layout="@layout/fragment_add_recipe" />
-</navigation>
+        <!-- Recipe Feed Fragment -->
+        <fragment
+            android:id="@+id/recipeFeedFragment"
+            android:name="com.example.recipes_mobile.RecipeFeedFragment"
+            tools:layout="@layout/fragment_recipe_feed">
+
+            <!-- Action to navigate to Add Recipe Fragment -->
+            <action
+                android:id="@+id/action_recipeFeed_to_addRecipe"
+                app:destination="@id/addRecipeFragment" />
+
+    <!--        &lt;!&ndash; Action to navigate to Profile Fragment &ndash;&gt;-->
+    <!--        <action-->
+    <!--            android:id="@+id/action_recipeFeed_to_profile"-->
+    <!--            app:destination="@id/profileFragment" />-->
+        </fragment>
+
+        <!-- Add Recipe Fragment -->
+        <fragment
+            android:id="@+id/addRecipeFragment"
+            android:name="com.example.recipes_mobile.AddRecipeFragment"
+            android:label="Add Recipe"
+            tools:layout="@layout/fragment_add_recipe" />
+
+    <!--    &lt;!&ndash; Profile Fragment &ndash;&gt;-->
+    <!--    <fragment-->
+    <!--        android:id="@+id/profileFragment"-->
+    <!--        android:name="com.example.recipes_mobile.ProfileFragment"-->
+    <!--        tools:layout="@layout/fragment_profile" />-->
+    </navigation>
