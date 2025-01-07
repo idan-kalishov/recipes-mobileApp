@@ -11,6 +11,10 @@
             android:name="com.example.recipes_mobile.LoginFragment"
             tools:layout="@layout/fragment_login">
 
+            <action
+                android:id="@+id/action_loginFragment_to_signUpFragment"
+                app:destination="@id/signUpFragment" />
+
             <!-- Action to navigate to Recipe Feed Fragment -->
             <action
                 android:id="@+id/action_login_to_recipeFeed"
@@ -46,4 +50,16 @@
     <!--        android:id="@+id/profileFragment"-->
     <!--        android:name="com.example.recipes_mobile.ProfileFragment"-->
     <!--        tools:layout="@layout/fragment_profile" />-->
+
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.example.recipes_mobile.SignUpFragment"
+        tools:layout="@layout/fragment_signup">
+
+    <action
+        android:id="@+id/action_signUpFragment_to_loginFragment"
+        app:destination="@id/loginFragment" />
+    </fragment>
+
+
     </navigation>

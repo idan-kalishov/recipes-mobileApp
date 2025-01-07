@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.recipes_mobile.databinding.FragmentAddRecipeBinding
+import com.example.recipes_mobile.utils.ImagePickerUtils
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
@@ -36,13 +37,14 @@ class AddRecipeFragment : Fragment() {
         binding = FragmentAddRecipeBinding.inflate(inflater, container, false)
         (requireActivity() as AppCompatActivity).supportActionBar?.show()
 
+        // Navigate back to Recipe Feed
         binding.fabHome.setOnClickListener {
             findNavController().navigate(R.id.recipeFeedFragment)
         }
 
-        // Button to select image
+        // Button to select an image
         binding.btnRecipe.setOnClickListener {
-            pickImageFromGalleryOrCamera()
+            ImagePickerUtils.pickImageFromGalleryOrCamera(this) // Use utility method
         }
 
         // Button to save recipe
@@ -53,41 +55,18 @@ class AddRecipeFragment : Fragment() {
         return binding.root
     }
 
-    private fun pickImageFromGalleryOrCamera() {
-        // Intent to pick an image from the gallery
-        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-
-        // Intent to capture an image using the camera
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
-        // Combine the two intents into a chooser
-        val chooserIntent = Intent.createChooser(galleryIntent, "Select Image")
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(cameraIntent))
-
-        startActivityForResult(chooserIntent, IMAGE_PICK_CAMERA_REQUEST)
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == IMAGE_PICK_CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
-            val imageBitmap: Bitmap? = when {
-                data?.data != null -> {
-                    // Image selected from gallery
-                    val imageUri = data.data
-                    MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
-                }
-                data?.extras?.get("data") != null -> {
-                    // Image captured from camera
-                    data.extras?.get("data") as Bitmap
-                }
-                else -> null
-            }
-
-            imageBitmap?.let {
-                selectedImageBitmap = it
-                binding.imageView.setImageBitmap(it)
-            }
+        // Use ImagePickerUtils to handle the result
+        ImagePickerUtils.handleImageResult(
+            requestCode,
+            resultCode,
+            data,
+            requireContext()
+        ) { bitmap ->
+            selectedImageBitmap = bitmap
+            binding.imageView.setImageBitmap(bitmap) // Display the selected image
         }
     }
 
@@ -102,7 +81,8 @@ class AddRecipeFragment : Fragment() {
         }
 
         // Upload image to Imgur
-        ImgurUploader.uploadImage(selectedImageBitmap!!,
+        ImgurUploader.uploadImage(
+            selectedImageBitmap!!,
             onSuccess = { imageUrl ->
                 // Save recipe with image URL to Firestore
                 saveRecipeToFirestore(title, ingredients, steps, imageUrl)
@@ -138,9 +118,5 @@ class AddRecipeFragment : Fragment() {
         binding.etSteps.text?.clear()
         binding.imageView.setImageBitmap(null)
         selectedImageBitmap = null
-    }
-
-    companion object {
-        private const val IMAGE_PICK_CAMERA_REQUEST = 1003
     }
 }

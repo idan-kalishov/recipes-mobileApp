@@ -17,7 +17,6 @@ class LoginFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var auth: FirebaseAuth
-    private var isLoginMode = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,6 +31,7 @@ class LoginFragment : Fragment() {
 
         auth = FirebaseAuth.getInstance()
 
+        // Login button logic
         binding.loginButton.setOnClickListener {
             val email = binding.emailEditText.text.toString().trim()
             val password = binding.passwordEditText.text.toString().trim()
@@ -41,34 +41,21 @@ class LoginFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            if (isLoginMode) {
-                auth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            findNavController().navigate(R.id.action_login_to_recipeFeed)
-                        } else {
-                            Log.e("LoginFragment", "Login failed", task.exception)
-                            Toast.makeText(requireContext(), "Login failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
-                        }
+            auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        // Navigate to Recipe Feed on successful login
+                        findNavController().navigate(R.id.action_login_to_recipeFeed)
+                    } else {
+                        Log.e("LoginFragment", "Login failed", task.exception)
+                        Toast.makeText(requireContext(), "Login failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                     }
-            } else {
-                auth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            Log.d("LoginFragment", "Signup successful")
-                            findNavController().navigate(R.id.action_login_to_recipeFeed)
-                        } else {
-                            Log.e("LoginFragment", "Signup failed", task.exception)
-                            Toast.makeText(requireContext(), "Signup failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-            }
+                }
         }
 
+        // Navigate to Sign-Up screen
         binding.signupButton.setOnClickListener {
-            isLoginMode = !isLoginMode
-            binding.loginButton.text = if (isLoginMode) "Login" else "Sign Up"
-            binding.signupButton.text = if (isLoginMode) "Switch to Sign Up" else "Switch to Login"
+            findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
         }
     }
 
