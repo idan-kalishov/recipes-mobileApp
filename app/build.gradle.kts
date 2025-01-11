@@ -88,6 +88,10 @@ dependencies {
     implementation("com.squareup.picasso:picasso:2.8")
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
     implementation("org.json:json:20210307")
+    implementation("com.google.code.gson:gson:2.10.1")
+//    implementation("com.google.android.gms:play-services:12.0.1")
+
+
 
     // Testing Dependencies
     testImplementation(libs.junit)

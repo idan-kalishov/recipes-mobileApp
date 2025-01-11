@@ -22,6 +22,17 @@ object ImagePickerUtils {
         return Uri.fromFile(file)
     }
 
+    fun saveImageToLocalFile(context: Context, bitmap: Bitmap): String {
+        val fileName = "IMG_${System.currentTimeMillis()}.jpg"
+        val file = File(context.filesDir, fileName)
+
+        FileOutputStream(file).use { outputStream ->
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        }
+
+        return file.absolutePath // Return the file path to save in Room
+    }
+
 
     // Open gallery or camera picker
     fun pickImageFromGalleryOrCamera(fragment: Fragment) {

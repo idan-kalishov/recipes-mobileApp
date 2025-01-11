@@ -1,33 +1,37 @@
 package com.example.recipes_mobile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import androidx.core.view.MenuProvider
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.recipes_mobile.Database.RecipesDatabase
 import com.example.recipes_mobile.databinding.FragmentRecipeFeedBinding
-import com.example.recipes_mobile.model.Recipe
+import com.example.recipes_mobile.model.MyRecipesDao
+import com.example.recipes_mobile.repositories.RecipeRepository
+import com.example.recipes_mobile.services.FirestoreService
 import com.example.recipes_mobile.utils.MenuUtils
+import com.example.recipes_mobile.viewModels.RecipeViewModel
+import com.example.recipes_mobile.viewModels.RecipeViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class RecipeFeedFragment : Fragment() {
+class RecipeFeedFragment: Fragment() {
 
-    private lateinit var binding: FragmentRecipeFeedBinding
-    private val firestore = FirebaseFirestore.getInstance()
+    private var _binding: FragmentRecipeFeedBinding? = null
+    private val binding get() = _binding!!
+
+    private lateinit var recipeViewModel: RecipeViewModel
+
     private val recipesAdapter = RecipesAdapter { recipe ->
-        // Handle click on recipe title (for future detail view navigation)
         Toast.makeText(requireContext(), "Clicked: ${recipe.title}", Toast.LENGTH_SHORT).show()
     }
 
@@ -35,33 +39,45 @@ class RecipeFeedFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentRecipeFeedBinding.inflate(inflater, container, false)
+        _binding = FragmentRecipeFeedBinding.inflate(inflater, container, false)
 
+        // Initialize ViewModel
+        val context = requireContext()
+        val recipeDao = RecipesDatabase.getInstance(context).myRecipesDao()
+        val firestoreService = FirestoreService()
+        val repository = RecipeRepository(recipeDao, firestoreService, context)
+        val factory = RecipeViewModelFactory(repository)
+        recipeViewModel = ViewModelProvider(this, factory).get(RecipeViewModel::class.java)
 
-        //calc how many items can fit the screen
+        // Initialize ViewModel logic
+        recipeViewModel.init()
+
+        // Setup UI and Observers
+        setupUI()
+        setupObservers()
+
+        return binding.root
+    }
+
+    private fun setupUI() {
         val displayMetrics = resources.displayMetrics
         val screenWidth = displayMetrics.widthPixels / displayMetrics.density
         val itemWidth = 150
         val spanCount = (screenWidth / itemWidth).toInt().coerceAtLeast(1)
 
-        // Setup RecyclerView
         binding.recyclerView.apply {
             layoutManager = GridLayoutManager(requireContext(), spanCount)
             adapter = recipesAdapter
         }
 
-        // Fetch and display recipes
-        fetchRecipes()
-
-        // Setup SearchView
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                filterRecipes(query.orEmpty())
+                recipeViewModel.filterRecipes(query.orEmpty())
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                filterRecipes(newText.orEmpty())
+                recipeViewModel.filterRecipes(newText.orEmpty())
                 return true
             }
         })
@@ -69,9 +85,19 @@ class RecipeFeedFragment : Fragment() {
         binding.menuButton.setOnClickListener {
             setupMenu(it)
         }
+    }
 
+    private fun setupObservers() {
+        // Observe the LiveData for the recipe list
+        recipeViewModel.recipes.observe(viewLifecycleOwner) { recipes ->
+            Log.d("RecipeFeedFragment", "Received recipes: $recipes")
+            CoroutineScope(Dispatchers.IO).launch {
+                recipeViewModel.test1();
 
-        return binding.root
+            }
+            recipesAdapter.submitList(recipes.toMutableList())
+            binding.progressBar.visibility = if (recipes.isEmpty()) View.VISIBLE else View.GONE
+        }
     }
 
     private fun setupMenu(view: View) {
@@ -83,19 +109,9 @@ class RecipeFeedFragment : Fragment() {
         )
     }
 
-    private fun fetchRecipes() {
-        firestore.collection("recipes")
-            .get()
-            .addOnSuccessListener { documents ->
-                val recipes = documents.mapNotNull { it.toObject(Recipe::class.java) }
-                recipesAdapter.submitList(recipes)
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Failed to fetch recipes: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
-    private fun filterRecipes(query: String) {
-        recipesAdapter.filter(query)
-    }
 }

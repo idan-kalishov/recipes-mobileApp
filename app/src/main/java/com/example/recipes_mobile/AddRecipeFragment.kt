@@ -3,39 +3,36 @@ package com.example.recipes_mobile
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.recipes_mobile.databinding.FragmentAddRecipeBinding
 import com.example.recipes_mobile.utils.ImagePickerUtils
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.squareup.picasso.Picasso
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
+import kotlinx.coroutines.withContext
+import java.util.UUID
 
 class AddRecipeFragment : Fragment() {
 
     private lateinit var binding: FragmentAddRecipeBinding
     private var selectedImageBitmap: Bitmap? = null
     private val firestore = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentAddRecipeBinding.inflate(inflater, container, false)
-        (requireActivity() as AppCompatActivity).supportActionBar?.show()
 
         // Navigate back to Recipe Feed
         binding.fabHome.setOnClickListener {
@@ -44,7 +41,7 @@ class AddRecipeFragment : Fragment() {
 
         // Button to select an image
         binding.btnRecipe.setOnClickListener {
-            ImagePickerUtils.pickImageFromGalleryOrCamera(this) // Use utility method
+            ImagePickerUtils.pickImageFromGalleryOrCamera(this)
         }
 
         // Button to save recipe
@@ -58,7 +55,6 @@ class AddRecipeFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        // Use ImagePickerUtils to handle the result
         ImagePickerUtils.handleImageResult(
             requestCode,
             resultCode,
@@ -66,7 +62,7 @@ class AddRecipeFragment : Fragment() {
             requireContext()
         ) { bitmap ->
             selectedImageBitmap = bitmap
-            binding.imageView.setImageBitmap(bitmap) // Display the selected image
+            binding.imageView.setImageBitmap(bitmap)
         }
     }
 
@@ -80,29 +76,58 @@ class AddRecipeFragment : Fragment() {
             return
         }
 
-        // Upload image to Imgur
-        ImgurUploader.uploadImage(
-            selectedImageBitmap!!,
-            onSuccess = { imageUrl ->
-                // Save recipe with image URL to Firestore
-                saveRecipeToFirestore(title, ingredients, steps, imageUrl)
-            },
-            onFailure = { error ->
-                Toast.makeText(requireContext(), "Image upload failed: $error", Toast.LENGTH_SHORT).show()
+        val userId = auth.currentUser?.uid
+        if (userId == null) {
+            Toast.makeText(requireContext(), "User not authenticated. Please log in.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val recipeId = UUID.randomUUID().toString()
+
+        lifecycleScope.launch {
+            try {
+                ImgurUploader.uploadImage(
+                    selectedImageBitmap!!,
+                    onSuccess = { imgurUrl ->
+                        lifecycleScope.launch {
+                            saveRecipeToFirestore(recipeId, userId, title, ingredients, steps, imgurUrl)
+                        }
+                    },
+                    onFailure = { error ->
+                        lifecycleScope.launch {
+                            Toast.makeText(requireContext(), "Image upload failed: $error", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                )
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Error saving recipe: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
             }
-        )
+        }
     }
 
-    private fun saveRecipeToFirestore(title: String, ingredients: String, steps: String, imageUrl: String) {
+    private fun saveRecipeToFirestore(
+        recipeId: String,
+        userId: String,
+        title: String,
+        ingredients: String,
+        steps: String,
+        imageUrl: String
+    ) {
         val recipe = hashMapOf(
+            "id" to recipeId,
             "title" to title,
             "ingredients" to ingredients,
             "steps" to steps,
-            "imageUrl" to imageUrl
+            "imageUrl" to imageUrl,
+            "userId" to userId,
+            "lastUpdated" to System.currentTimeMillis()
         )
 
         firestore.collection("recipes")
-            .add(recipe)
+            .document(recipeId)
+            .set(recipe)
             .addOnSuccessListener {
                 Toast.makeText(requireContext(), "Recipe saved successfully!", Toast.LENGTH_SHORT).show()
                 clearFields()
