@@ -32,7 +32,10 @@ class RecipeFeedFragment: Fragment() {
     private lateinit var recipeViewModel: RecipeViewModel
 
     private val recipesAdapter = RecipesAdapter { recipe ->
-        Toast.makeText(requireContext(), "Clicked: ${recipe.title}", Toast.LENGTH_SHORT).show()
+        val bundle = Bundle().apply {
+            putParcelable("recipe", recipe)
+        }
+        findNavController().navigate(R.id.recipeDetailFragment, bundle)
     }
 
     override fun onCreateView(

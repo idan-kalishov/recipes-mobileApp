@@ -19,6 +19,18 @@
             <action
                 android:id="@+id/action_login_to_recipeFeed"
                 app:destination="@id/recipeFeedFragment" />
+            <action
+                android:id="@+id/action_recipeFeedFragment_to_recipeDetailFragment"
+                app:destination="@id/recipeDetailFragment" />
+        </fragment>
+
+        <fragment
+            android:id="@+id/recipeDetailFragment"
+            android:name="com.example.recipes_mobile.RecipeDetailFragment"
+            android:label="Recipe Detail">
+            <argument
+                android:name="recipe"
+                app:argType="com.example.recipes_mobile.model.Recipe" />
         </fragment>
 
         <!-- Recipe Feed Fragment -->
