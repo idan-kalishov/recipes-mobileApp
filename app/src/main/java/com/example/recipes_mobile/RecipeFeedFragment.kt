@@ -91,10 +91,6 @@ class RecipeFeedFragment: Fragment() {
         // Observe the LiveData for the recipe list
         recipeViewModel.recipes.observe(viewLifecycleOwner) { recipes ->
             Log.d("RecipeFeedFragment", "Received recipes: $recipes")
-            CoroutineScope(Dispatchers.IO).launch {
-                recipeViewModel.test1();
-
-            }
             recipesAdapter.submitList(recipes.toMutableList())
             binding.progressBar.visibility = if (recipes.isEmpty()) View.VISIBLE else View.GONE
         }

@@ -68,9 +68,6 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
             repository.checkAndRemoveDeletedRecipes(viewModelScope)
         }
     }
-    fun test1(){
-        repository.test1();
-    }
 
 }
 

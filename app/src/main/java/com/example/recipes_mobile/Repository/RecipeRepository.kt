@@ -31,8 +31,6 @@
                     lastUpdateTime = lastUpdated,
                     coroutineScope = scope,
                     onSuccess = { updatedRecipes ->
-                        Log.d("test", "last update Time: $lastUpdated")
-                        Log.d("test", "updated recipes: $updatedRecipes")
                         if (updatedRecipes.isNotEmpty()) {
                             scope.launch(Dispatchers.IO) {
                                 recipeDao.insertAll(updatedRecipes)
@@ -53,7 +51,6 @@
             firestoreService.listenForUpdates(
                 lastUpdateTime = lastUpdated,
                 onRecipeAddedOrUpdated = { recipe ->
-                    Log.d("test 1", "this the update that arrived: $recipe + and the last update time is: $lastUpdated")
                     scope.launch(Dispatchers.IO) {
                         recipeDao.insert(recipe)
                         Log.d("test insert", "this what's inside the room: ${recipeDao.getAllSync()}")
@@ -79,7 +76,6 @@
                 firestoreService.fetchDeletedRecipes(
                     recipeIds = allLocalRecipes.map { it.id },
                     onSuccess = { deletedIds ->
-                        Log.d("test", "actually deleting those recipes $deletedIds")
                         scope.launch(Dispatchers.IO) {
                             recipeDao.deleteByIds(deletedIds)
                         }
@@ -91,9 +87,4 @@
             }
         }
 
-        fun test1() {
-            CoroutineScope(Dispatchers.IO).launch {
-                Log.d("test insert", "this what's inside the room: ${recipeDao.getAllSync()}")
-            }
-        }
     }

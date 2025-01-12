@@ -33,7 +33,6 @@ class FirestoreService(private val db: FirebaseFirestore = FirebaseFirestore.get
                     }
 
                     snapshot?.documentChanges?.forEach { change ->
-                        Log.d("test", "this change: ${ change.document.toObject(Recipe::class.java)}")
                         val recipeId = change.document.id
                         when (change.type) {
                             DocumentChange.Type.ADDED, DocumentChange.Type.MODIFIED -> {
