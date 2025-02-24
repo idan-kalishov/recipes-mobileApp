@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_background">
+    android:background="@drawable/signup_background">
 
     <!-- Centered Container -->
     <LinearLayout
@@ -14,6 +15,49 @@
         android:layout_centerInParent="true"
         android:orientation="vertical"
         android:padding="32dp">
+
+        <!-- Profile Picture -->
+        <ImageView
+            android:id="@+id/profileImageView"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_user_placeholder"
+            android:contentDescription="Profile Picture"
+            android:scaleType="centerCrop"
+            android:background="@drawable/circle_shape"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/uploadProfileImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Upload Picture" />
+
+        <!-- Username Input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:boxBackgroundColor="@color/white"
+            app:boxStrokeColor="@color/colorPrimary"
+            app:hintTextColor="@color/colorHint"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp"
+            android:textColorHint="@color/black"
+            android:hint="Name">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/nameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_regular"
+                android:textColor="@color/colorTextPrimary"
+                android:backgroundTint="@color/white"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Email Input -->
         <com.google.android.material.textfield.TextInputLayout
@@ -28,6 +72,7 @@
             app:boxCornerRadiusTopEnd="12dp"
             app:boxCornerRadiusBottomStart="12dp"
             app:boxCornerRadiusBottomEnd="12dp"
+            android:textColorHint="@color/black"
             android:hint="Email">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -42,10 +87,9 @@
 
         <!-- Password Input -->
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/passwordLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:boxBackgroundMode="filled"
+            android:layout_marginBottom="16dp"
             app:boxBackgroundColor="@color/white"
             app:boxStrokeColor="@color/colorPrimary"
             app:hintTextColor="@color/colorHint"
@@ -53,6 +97,8 @@
             app:boxCornerRadiusTopEnd="12dp"
             app:boxCornerRadiusBottomStart="12dp"
             app:boxCornerRadiusBottomEnd="12dp"
+            android:textColorHint="@color/black"
+            android:backgroundTint="@android:color/transparent"
             android:hint="Password">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -62,29 +108,37 @@
                 android:inputType="textPassword"
                 android:fontFamily="@font/roboto_regular"
                 android:textColor="@color/colorTextPrimary"
-                android:backgroundTint="@color/white" />
+                android:backgroundTint="@color/white"
+                />
+
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Submit Button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/loginButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Login"
-            android:textColor="@color/colorButtonText"
-            android:fontFamily="@font/roboto_bold"
-            android:backgroundTint="@color/colorPrimary" />
-
-        <!-- Toggle Mode -->
+        <!-- Sign-Up Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/signupButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Switch to Sign Up"
+            android:layout_marginTop="24dp"
+            android:text="Sign Up"
+            android:textColor="@color/colorButtonText"
+            android:fontFamily="@font/roboto_bold"
+            android:backgroundTint="@color/colorPrimary" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/backToLoginButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Already a Member? Login"
             android:fontFamily="@font/roboto_bold"
             android:backgroundTint="@color/colorAccent"
-            android:textColor="@color/colorButtonText" />
+            android:textColor="@color/colorButtonText"
+            android:layout_marginTop="24dp" />
     </LinearLayout>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:indeterminate="true" />
 </RelativeLayout>

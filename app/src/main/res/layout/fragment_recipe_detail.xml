@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="16dp"
+        android:background="@drawable/card_background"
+        android:elevation="4dp">
+
+        <!-- Recipe Image with rounded corners -->
+        <ImageView
+            android:id="@+id/ivRecipeImage"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="recipe image"
+            android:background="@drawable/rounded_corners"/>
+
+        <!-- Title Section -->
+        <TextView
+            android:id="@+id/tvRecipeTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="28sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:paddingTop="16dp"
+            android:gravity="center"
+            android:textAlignment="center"/>
+
+        <!-- Ingredients Section -->
+        <TextView
+            android:id="@+id/tvIngredientsLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ingredients"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/tvIngredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:paddingTop="8dp"
+            android:textColor="@color/colorPrimary"/>
+
+        <!-- Steps Section -->
+        <TextView
+            android:id="@+id/tvStepsLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Steps"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/tvSteps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:paddingTop="8dp"
+            android:textColor="@color/colorPrimary"/>
+
+    </LinearLayout>
+</ScrollView>
