@@ -19,6 +19,3 @@ data class Recipe(
     val lastUpdated: Long = 0,
     var user:  @RawValue User = User()
 ): Parcelable
-
-
-
