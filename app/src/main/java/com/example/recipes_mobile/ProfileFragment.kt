@@ -72,7 +72,6 @@ class ProfileFragment : Fragment() {
             }
 
         recipesAdapter = RecipesAdapter { recipe: Recipe ->
-            // בעת לחיצה על מתכון – נווט למסך פרטי המתכון
             val bundle = Bundle().apply { putParcelable("recipe", recipe) }
             findNavController().navigate(R.id.recipeDetailFragment, bundle)
         }
