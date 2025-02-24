@@ -31,9 +31,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_menu"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Menu"
-        android:background="?attr/selectableItemBackgroundBorderless" />
+        android:src="@drawable/ic_menu" />
 
     <ProgressBar
         android:id="@+id/progressBar"
