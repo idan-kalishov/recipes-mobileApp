@@ -84,9 +84,9 @@ class ProfileFragment : Fragment() {
             binding.tvRecipesCount.text = "Your Recipes: ${recipes.size}"
         }
 
-//        binding.btnEditProfile.setOnClickListener {
-//            findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
-//        }
+        binding.btnEditProfile.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
+        }
     }
 
     override fun onDestroyView() {
