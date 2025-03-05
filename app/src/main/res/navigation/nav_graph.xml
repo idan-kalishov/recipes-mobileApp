@@ -28,6 +28,9 @@
         <argument
             android:name="recipe"
             app:argType="com.example.recipes_mobile.model.Recipe" />
+        <action
+            android:id="@+id/action_recipeDetailFragment_to_addRecipeFragment"
+            app:destination="@id/addRecipeFragment" />
     </fragment>
 
     <fragment

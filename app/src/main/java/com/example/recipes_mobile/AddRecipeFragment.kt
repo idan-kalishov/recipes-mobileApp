@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.recipes_mobile.databinding.FragmentAddRecipeBinding
+import com.example.recipes_mobile.model.Recipe
 import com.example.recipes_mobile.utils.ImagePickerUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,33 +29,58 @@ class AddRecipeFragment : Fragment() {
     private val firestore = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
 
+    // Flag to indicate if we are in edit mode and the existing recipe object
+    private var isEditMode = false
+    private var existingRecipe: Recipe? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentAddRecipeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Check if a Recipe argument was passed => edit mode
+        existingRecipe = arguments?.getParcelable("recipe")
+        isEditMode = existingRecipe != null
+
+        if (isEditMode) {
+            // Fill input fields with existing recipe data
+            binding.etUploadTitle.setText(existingRecipe?.title)
+            binding.etIngredients.setText(existingRecipe?.ingredients)
+            binding.etSteps.setText(existingRecipe?.steps)
+            val imageUrl = existingRecipe?.imageUrl ?: ""
+            if (imageUrl.isNotEmpty()) {
+                // Load the existing image using Picasso
+                com.squareup.picasso.Picasso.get()
+                    .load(imageUrl)
+                    .error(R.drawable.ic_broken_image)
+                    .into(binding.imageView)
+            }
+        }
 
         // Navigate back to Recipe Feed
         binding.fabHome.setOnClickListener {
             findNavController().navigate(R.id.recipeFeedFragment)
         }
 
-        // Button to select an image
+        // Button to select an image from gallery or camera
         binding.btnRecipe.setOnClickListener {
             ImagePickerUtils.pickImageFromGalleryOrCamera(this)
         }
 
-        // Button to save recipe
+        // Button to save (or update) recipe
         binding.btnSave.setOnClickListener {
             saveRecipe()
         }
-
-        return binding.root
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         ImagePickerUtils.handleImageResult(
             requestCode,
             resultCode,
@@ -71,7 +97,7 @@ class AddRecipeFragment : Fragment() {
         val ingredients = binding.etIngredients.text.toString().trim()
         val steps = binding.etSteps.text.toString().trim()
 
-        if (title.isEmpty() || ingredients.isEmpty() || steps.isEmpty() || selectedImageBitmap == null) {
+        if (title.isEmpty() || ingredients.isEmpty() || steps.isEmpty() || (!isEditMode && selectedImageBitmap == null)) {
             Toast.makeText(requireContext(), "Please fill all fields and select an image", Toast.LENGTH_SHORT).show()
             return
         }
@@ -82,28 +108,33 @@ class AddRecipeFragment : Fragment() {
             return
         }
 
-        val recipeId = UUID.randomUUID().toString()
+        val recipeId = if (isEditMode) existingRecipe!!.id else UUID.randomUUID().toString()
 
-        lifecycleScope.launch {
-            try {
-                ImgurUploader.uploadImage(
-                    selectedImageBitmap!!,
-                    onSuccess = { imgurUrl ->
-                        lifecycleScope.launch {
-                            saveRecipeToFirestore(recipeId, userId, title, ingredients, steps, imgurUrl)
+        if (selectedImageBitmap != null) {
+            lifecycleScope.launch {
+                try {
+                    ImgurUploader.uploadImage(
+                        selectedImageBitmap!!,
+                        onSuccess = { imgurUrl ->
+                            lifecycleScope.launch {
+                                saveRecipeToFirestore(recipeId, userId, title, ingredients, steps, imgurUrl)
+                            }
+                        },
+                        onFailure = { error ->
+                            lifecycleScope.launch {
+                                Toast.makeText(requireContext(), "Image upload failed: $error", Toast.LENGTH_SHORT).show()
+                            }
                         }
-                    },
-                    onFailure = { error ->
-                        lifecycleScope.launch {
-                            Toast.makeText(requireContext(), "Image upload failed: $error", Toast.LENGTH_SHORT).show()
-                        }
+                    )
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(requireContext(), "Error saving recipe: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
-                )
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), "Error saving recipe: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
+        } else {
+            val imageUrl = existingRecipe?.imageUrl ?: ""
+            saveRecipeToFirestore(recipeId, userId, title, ingredients, steps, imageUrl)
         }
     }
 
@@ -129,8 +160,10 @@ class AddRecipeFragment : Fragment() {
             .document(recipeId)
             .set(recipe)
             .addOnSuccessListener {
-                Toast.makeText(requireContext(), "Recipe saved successfully!", Toast.LENGTH_SHORT).show()
+                val msg = if (isEditMode) "Recipe updated successfully!" else "Recipe saved successfully!"
+                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
                 clearFields()
+                findNavController().navigate(R.id.recipeFeedFragment)
             }
             .addOnFailureListener {
                 Toast.makeText(requireContext(), "Failed to save recipe: ${it.message}", Toast.LENGTH_SHORT).show()

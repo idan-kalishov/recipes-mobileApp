@@ -54,6 +54,14 @@ class FirestoreService(private val db: FirebaseFirestore = FirebaseFirestore.get
         }
     }
 
+    fun deleteRecipe(recipeId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+        db.collection(COLLECTION_RECIPES).document(recipeId)
+            .delete()
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { exception -> onFailure(exception) }
+    }
+
+
     // Fetch all recipes since the last updated time
     fun fetchAllRecipes(
         lastUpdateTime: Long,
