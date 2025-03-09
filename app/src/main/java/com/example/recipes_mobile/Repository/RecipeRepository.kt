@@ -87,4 +87,20 @@
             }
         }
 
+        fun deleteRecipe(recipeId: String, scope: CoroutineScope) {
+            scope.launch(Dispatchers.IO) {
+                firestoreService.deleteRecipe(
+                    recipeId,
+                    onSuccess = {
+                        // Launch a new coroutine inside the callback to call the suspend function
+                        scope.launch {
+                            recipeDao.deleteById(recipeId)
+                        }
+                    },
+                    onFailure = { exception ->
+                        Log.e("RecipeRepository", "Error deleting recipe", exception)
+                    }
+                )
+            }
+        }
     }

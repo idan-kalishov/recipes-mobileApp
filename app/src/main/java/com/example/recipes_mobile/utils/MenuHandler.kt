@@ -26,8 +26,7 @@ object MenuUtils {
                     true
                 }
                 R.id.menu_user_profile -> {
-                    //TODO add user profile when available
-                    navController.navigate(R.id.action_recipeFeed_to_profile)
+                    navController.navigate(R.id.profileFragment)
                     true
                 }
                 R.id.menu_logout -> {

@@ -14,7 +14,17 @@
         android:background="@drawable/card_background"
         android:elevation="4dp">
 
-        <!-- Recipe Image with rounded corners -->
+
+        <ImageButton
+            android:id="@+id/btnOptions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_margin="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Menu"
+            android:src="@drawable/ic_menu" />
+
         <ImageView
             android:id="@+id/ivRecipeImage"
             android:layout_width="match_parent"
