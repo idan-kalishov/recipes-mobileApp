@@ -29,6 +29,10 @@ object MenuUtils {
                     navController.navigate(R.id.profileFragment)
                     true
                 }
+                R.id.menu_generate_recipe -> {
+                    navController.navigate(R.id.recipeGeneratorFragment)
+                    true
+                }
                 R.id.menu_logout -> {
                     // Handle Logout
                     auth.signOut()

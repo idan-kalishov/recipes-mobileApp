@@ -69,6 +69,12 @@
             app:destination="@id/editProfileFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/recipeGeneratorFragment"
+        android:name="com.example.recipes_mobile.RecipeGeneratorFragment"
+        tools:layout="@layout/fragment_recipe_generator">
+    </fragment>
+
     <!-- Edit Profile Fragment -->
     <fragment
         android:id="@+id/editProfileFragment"
