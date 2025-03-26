@@ -14,6 +14,12 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/menu_generate_recipe"
+        android:icon="@drawable/ic_person"
+        android:title="generate recipe"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/menu_logout"
         android:icon="@drawable/ic_logout"
         android:title="Logout"
