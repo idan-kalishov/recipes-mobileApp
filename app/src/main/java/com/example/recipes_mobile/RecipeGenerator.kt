@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.recipes_mobile.databinding.FragmentRecipeGeneratorBinding
 import com.example.recipes_mobile.model.Content
 import com.example.recipes_mobile.model.GeneratedRecipeRecipe
@@ -39,6 +40,10 @@ class RecipeGeneratorFragment : Fragment() {
             if (ingredients.isNotEmpty()) {
                 fetchRecipe(ingredients)
             }
+        }
+
+        binding.fabHome.setOnClickListener {
+            findNavController().navigate(R.id.recipeFeedFragment)
         }
     }
 
@@ -105,4 +110,6 @@ class RecipeGeneratorFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+
 }

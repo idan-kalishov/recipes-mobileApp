@@ -10,8 +10,11 @@ object ImgurUploader {
 
     fun uploadImage(bitmap: Bitmap, onSuccess: (String) -> Unit, onFailure: (String) -> Unit) {
         val url = "https://api.imgur.com/3/image"
-        val client = OkHttpClient()
-
+        val client = OkHttpClient.Builder()
+            .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+            .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+            .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+            .build()
         // Convert Bitmap to Base64
         val outputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream)
