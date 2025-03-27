@@ -1,32 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Ingredients Input -->
     <EditText
         android:id="@+id/etIngredients"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter ingredients (comma-separated)"
-        android:inputType="text" />
+        android:inputType="text"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="16dp"
+        android:textColorHint="@android:color/black"/>
 
+    <!-- Generate Button -->
     <Button
         android:id="@+id/btnGenerate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Generate Recipe"
-        android:layout_marginTop="10dp"/>
+        android:layout_below="@id/etIngredients"
+        android:layout_marginTop="10dp" />
 
+    <!-- Progress Bar -->
     <ProgressBar
         android:id="@+id/progressBar"
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"/>
+        android:layout_below="@id/btnGenerate"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp" />
 
+    <!-- Recipe Result -->
     <TextView
         android:id="@+id/tvRecipeResult"
         android:layout_width="match_parent"
@@ -34,5 +44,18 @@
         android:visibility="gone"
         android:textSize="16sp"
         android:textColor="@android:color/black"
-        android:layout_marginTop="20dp" />
-</LinearLayout>
+        android:layout_below="@id/progressBar"
+        android:layout_marginTop="20dp"
+        />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabHome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"
+        android:contentDescription="Go to Home"
+        app:backgroundTint="@color/colorPrimary"
+        app:srcCompat="@drawable/ic_home" />
+</RelativeLayout>
